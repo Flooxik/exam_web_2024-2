@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mx-2">
+    <h1 class="card-title mb-2">{{ book.name }}</h1>
+    <div class="col-md-4" style="width: 15%;">
+        <img class="img-fluid" src="{{ url_for('static', filename='images/' + book.imgname) }}" alt="Book cover">
+    </div>
+    <div class="card-text col-md-4">
+        <p>Описание: {{ book.description }}</p>
+        <p>Год издания: {{ book.year }}</p>
+        <p>Издательство: {{ book.publisher }}</p>
+        <p>Автор: {{ book.author }}</p>
+        <p>Количество страниц: {{ book.length }}</p>
+        <p>Жанр: {{ book.genre if book.genre else 'Не указан' }}</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Рецензии</h2>
+      {% for review in reviews %}
+        <p>Оценка: {{ review.score }}/5</p>
+        <p>Рецензия: {{ review.text }}</p>
+        <p>Написана: {{ review.user_id }} on {{ review.date }}</p>
+      {% endfor %}
+      <p><a href="{{ url_for('create_review', book_id=book.book_id) }}">Написать рецензию</a></p>
+    </div>
+</div>
+{% endblock %}

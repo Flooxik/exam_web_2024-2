@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+{% from '/book/book_form.html' import book_form %}
+    {{book_form(cover_class, name_class, description_class, year_class, publisher_class, author_class, length_class) }}
+{% endblock %}

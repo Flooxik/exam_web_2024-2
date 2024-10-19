@@ -1,0 +1,46 @@
+{% macro book_form(cover_class=None, name_class=None, description_class=None, year_class=None, publisher_class=None, author_class=None, length_class=None)  %}
+    <div class="container">
+        {% if request.endpoint == 'book_add' %}
+            <h1>Добавить книгу</h1>
+        {% else %}
+            <h1>Редактировать книгу</h1>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+            {% if request.endpoint == 'book_add' %}
+                <div class="form-group mb-2">
+                    <label for="cover">Обложка:</label>
+                    <input type="file" class="form-control {{cover_class}}" id="cover" name="cover" accept="image/webp">
+                </div>
+            {% endif %}
+            <div class="form-group mb-2">
+                <label for="book_name">Название книги:</label>
+                <input type="text" class="form-control {{name_class}}" id="book_name" name="book_name" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="description">Описание:</label>
+                <textarea class="form-control {{description_class}}" id="description" name="description" required></textarea>
+            </div>
+            <div class="form-group mb-2">
+                <label for="year">Год издания:</label>
+                <input type="number" class="form-control {{year_class}}" id="year" name="year" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="publisher">Издательство:</label>
+                <input type="text" class="form-control {{publisher_class}}" id="publisher" name="publisher" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="author">Автор:</label>
+                <input type="text" class="form-control {{author_class}}" id="author" name="author" required>
+            </div>
+            <div class="mb-3">
+                <label for="genre" class="form-label">Жанр</label>
+                <input type="text" class="form-control" id="genre" name="genre" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="length">Количество страниц:</label>
+                <input type="number" class="form-control {{length_class}}" id="length" name="length" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+    </div>
+{% endmacro %}

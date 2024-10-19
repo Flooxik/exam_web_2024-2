@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="my-4">
+        <h1>Библиотека</h1>
+    </div>
+
+    <form method="GET" action="{{ url_for('index') }}" class="mb-4">
+        <div class="row">
+            <div class="col-lg-3">
+                <label for="name" class="form-label">Название книги</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ request.args.get('name', '') }}">
+            </div>
+
+            <div class="col-lg-3">
+                <label for="author" class="form-label">Автор</label>
+                <input type="text" class="form-control" id="author" name="author" value="{{ request.args.get('author', '') }}">
+            </div>
+
+            <div class="col-lg-3">
+                <label class="form-label">Год выпуска</label>
+                <div>
+                    {% for year in years %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="year{{ year }}" name="year" value="{{ year }}"
+                                   {% if year in selected_years %}checked{% endif %}>
+                            <label class="form-check-label" for="year{{ year }}">
+                                {{ year }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <small class="form-text text-muted">Можно выбрать несколько годов или оставить поле пустым.</small>
+            </div>
+
+            <div class="col-lg-3">
+                <label class="form-label">Жанр</label>
+                <div>
+                    {% for genre in genres %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="genre{{ genre.genre_id }}" name="genre" value="{{ genre.genre_id }}"
+                                   {% if genre.genre_id in selected_genres %}checked{% endif %}>
+                            <label class="form-check-label" for="genre{{ genre.genre_id }}">
+                                {{ genre.genre }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <small class="form-text text-muted">Можно выбрать несколько жанров или оставить поле пустым.</small>
+            </div>
+
+            <div class="col-lg-3">
+                <label for="volume_from" class="form-label">Объём (от)</label>
+                <input type="text" class="form-control" id="volume_from" name="volume_from" value="{{ request.args.get('volume_from', '') }}">
+            </div>
+
+            <div class="col-lg-3">
+                <label for="volume_to" class="form-label">Объём (до)</label>
+                <input type="text" class="form-control" id="volume_to" name="volume_to" value="{{ request.args.get('volume_to', '') }}">
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Найти</button>
+        </div>
+    </form>
+
+    <div class="row mb-4">
+        {% for book in book_list %}
+            <div class="col-lg-2 d-flex">
+                <div class="card mb-2 mx-2">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ book.name }}</h2>
+                        <div class="img-fluid">
+                            <img class="img-fluid" src="{{ url_for('static', filename='images/' + book.imgname) }}" alt="{{book.name}} обложка">
+                        </div>
+                        <p class="card-text">
+                            Описание: {{ book.description }}
+                            <br>
+                            Издатель: {{ book.publisher }}
+                            <br>
+                            Автор: {{ book.author }}
+                            <br>
+                            Объем: {{ book.length }} стр.
+                            <br>
+                            Год выпуска: {{ book.year }}
+                            <br>
+                            Жанр: {{ book.genre }}
+                        </p>
+                        <div class="row justify-content-around">
+                            <a href="{{ url_for('book_details', book_id=book.id) }}" class="btn btn-primary col-sm-5 my-2">Детали книги</a>
+                            
+                            {% if current_user.role_id == 1 %}
+                                <a href="{{ url_for('book_edit', book_id=book.id) }}" class="btn btn-dark col-sm-5 my-2">Редактировать</a>
+                                <button type="button" class="btn btn-danger col-sm-5 my-2" data-bs-toggle="modal" data-bs-target="#deletewindow{{ book.id }}">Удалить</button>
+                            {% elif current_user.role_id == 2 %}
+                                <a href="{{ url_for('book_edit', book_id=book.id) }}" class="btn btn-dark col-sm-5 my-2">Редактировать</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if current_user.role_id == 1 %}
+                <div class="modal fade" tabindex="-1" id="deletewindow{{ book.id }}" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <p>Вы точно хотите удалить эту книгу?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <form action="{{ url_for('book_delete', book_id=book.id) }}" method="post">
+                                    <input type="hidden" name="confirm" value="confirm">
+                                    <button type="submit" class="btn btn-primary">Подтвердить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if current_user.role_id == 1 %}
+    <div class="mb-3 mx-3">
+        <a class="btn btn-secondary" href="{{url_for('book_add')}}" >Добавить книгу</a>
+    </div> 
+    {% endif %}
+{% endblock %}

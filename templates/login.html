@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Авторизация пользователя</h1>
+        <form method = "POST">
+            <div class="mb-3">
+              <label for="InputLogin" class="form-label">Логин</label>
+              <input name="login" type="login" class="form-control" id="InputLogin" aria-describedby="loginHelp" required>
+            </div>
+            <div class="mb-3">
+              <label for="InputPassword" class="form-label">Пароль</label>
+              <input name="password_hash" type="password" class="form-control" id="InputPassword" required>
+            </div>
+            <div class="form-check">
+              <label name="remember" class="form-check-label" for="remember">Запомнить Меня </label>
+              <input class="form-check-input" type="checkbox" value="" id="remember">
+            </div>
+            <button type="submit" class="btn btn-primary">Вход</button>
+          </form>
+    </div>
+{% endblock %}
